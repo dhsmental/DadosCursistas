@@ -508,7 +508,7 @@ form.addEventListener("submit", function(event) {
     // Envia os dados para o Google Sheets via POST
     fetch(urlGoogleScript, {
         method: "POST",
-        body: formData
+        body: formData,
 	mode: "no-cors"
     })
     .then(response => response.text())
