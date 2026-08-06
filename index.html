@@ -255,7 +255,7 @@
       <label><input type="radio" name="vinculo" value="100"> 100 - Outros</label>
     </div>
 
-    <!-- 3. LOCALIZAÇÃO E ESCOLA (CAMPOS ADICIONADOS PARA FUNCIONAR O SCRIPT) -->
+    <!-- 3. LOCALIZAÇÃO E ESCOLA -->
     <h2>Local de Atuação / Escola</h2>
 
     <!-- Estado (UF) -->
@@ -429,7 +429,7 @@ selectMunicipio.addEventListener("change", function() {
     const escolasFiltradas = EscolasMuniCSV.filter(item => {
         const temEscola = !!item["Escola"];
         
-        // Verifica o nome do município no CSV (cobre casos de espaços extras ou minúsculas)
+        // Verifica o nome do município no CSV 
         const municipioCSV = (item["Município"] || item["Municipio"] || "")
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g,"")
@@ -493,7 +493,7 @@ const form = document.getElementById("formCursistas");
 form.addEventListener("submit", function(event) {
     event.preventDefault(); // Impede a página de recarregar
     
-    // Substitua a URL abaixo pela URL do seu App da Web que você copiou no Passo 3
+    
     const urlGoogleScript = "https://script.google.com/macros/s/AKfycbygIUUDpimFweSAXgfdLznuaw4AtmylpRGOxWwxze4KquIm9hHND1FLkU_qu9gKfA4/exec";
     
     // Altera o texto do botão para mostrar que está carregando
