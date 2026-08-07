@@ -522,7 +522,12 @@ selectEscola.addEventListener("change", function() {
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
     } else {
-        campoInep.value = this.value;
+        // Encontra a escola selecionada na lista para pegar o código correspondente
+        const escolaSelecionada = escolasFiltradas.find(item => item["Escola"] === this.value);
+        
+        if (escolaSelecionada) {
+            campoInep.value = escolaSelecionada["INEP"]; // Substitua "INEP" pelo nome exato da coluna do código na sua base
+        }
         campoInep.readOnly = true;
     }
 });
