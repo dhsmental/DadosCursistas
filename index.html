@@ -8,12 +8,20 @@
   <!-- Importação da Biblioteca PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <style>
+ <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        padding: 20px;
+    }
 
     .container-principal {
         max-width: 900px; 
         margin: 0 auto;   
-    }
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
 
     .banner img {
         width: 100%;      
@@ -23,101 +31,100 @@
 
     .formulario {
         width: 100%;      
-        background-color: white;
-        padding: 20px;
+        padding: 30px;
         box-sizing: border-box; 
     }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
-      padding: 20px;
-    }
-    .form-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
     h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
+        font-size: 24px;
+        margin-bottom: 10px;
     }
+
     h2 {
-      font-size: 20px;
-      margin-top: 30px;
-      margin-bottom: 15px;
-      border-bottom: 2px solid #1a73e8;
-      padding-bottom: 5px;
+        font-size: 20px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #1a73e8;
+        padding-bottom: 5px;
     }
+
     p.description {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 20px;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
     }
+
     .form-group {
-      margin-bottom: 20px;
+        margin-bottom: 20px;
     }
+
     label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
     }
+
     .required {
-      color: red;
+        color: red;
     }
+
     .help-text {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 5px;
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 5px;
     }
+
     input[type="text"],
     input[type="email"],
     input[type="date"],
     input[type="tel"],
     select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
     }
+
     input[readonly] {
-      background-color: #e9ecef;
-      cursor: not-allowed;
+        background-color: #e9ecef;
+        cursor: not-allowed;
     }
+
     .radio-group label {
-      font-weight: normal;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 5px;
-      cursor: pointer;
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+        cursor: pointer;
     }
+
     .buttons {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 30px;
+        display: flex;
+        justify-style: space-between;
+        align-items: center;
+        margin-top: 30px;
     }
+
     button {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
     }
+
     .btn-submit {
-      background-color: #1a73e8;
-      color: white;
+        background-color: #1a73e8;
+        color: white;
     }
+
     .btn-reset {
-      background-color: transparent;
-      color: #555;
+        background-color: transparent;
+        color: #555;
     }
-  </style>
+</style>
 </head>
 
 <body>
