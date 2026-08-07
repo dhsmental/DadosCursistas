@@ -194,6 +194,15 @@
         to { transform: scale(1); opacity: 1; }
     }
 
+    /* Estilo para a Logo dentro do Alerta */
+    .alert-logo {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+        margin-bottom: 15px;
+        border-radius: 50%;
+    }
+
     #custom-alert-box h3 {
         margin-top: 0;
         color: #1a73e8;
@@ -444,9 +453,10 @@
 </div>
 </div>
 
-<!-- HTML do Alerta Personalizado -->
+<!-- HTML do Alerta Personalizado com a Logo -->
 <div id="custom-alert-overlay">
     <div id="custom-alert-box">
+        <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/logo.jpeg" alt="Logo" class="alert-logo">
         <h3>Sucesso!</h3>
         <p id="custom-alert-message">Cadastro realizado com sucesso!</p>
         <button onclick="fecharAlertaCustomizado()">OK</button>
