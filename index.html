@@ -727,7 +727,6 @@ function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const tipo = perfilSelecionado ? perfilSelecionado.value : "";
     
-    // Se nenhum perfil foi escolhido, trava tudo
     if (!tipo) {
         selectUF.value = "";
         selectUF.disabled = true;
@@ -740,7 +739,6 @@ function atualizarEstadoCamposEscola() {
         return;
     }
 
-    // Tanto Estudante quanto Profissional podem escolher UF e Município
     selectUF.disabled = false;
     selectUF.setAttribute("required", "required");
 
@@ -750,17 +748,22 @@ function atualizarEstadoCamposEscola() {
         selectMunicipio.disabled = true;
     }
 
-    // Regras específicas para Escola e INEP baseadas no perfil
     if (tipo === "Profissional da Educação") {
-        if (selectMunicipio.value) {
-            selectEscola.disabled = false;
-        } else {
-            selectEscola.disabled = true;
-        }
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
+
+        // Se já tiver município selecionado, reativa o select de escolas e dispara a função que busca as escolas do município
+        if (selectMunicipio.value) {
+            selectEscola.disabled = false;
+            if (typeof carregarEscolasPorMunicipio === "function") {
+                carregarEscolasPorMunicipio(selectUF.value, selectMunicipio.value);
+            }
+        } else {
+            selectEscola.disabled = true;
+            selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
+        }
     } else {
-        // Se for Estudante, bloqueia a escola e o INEP independentemente do município
+        // Se for Estudante, desativa e limpa os campos de escola/INEP
         selectEscola.innerHTML = '<option value="">Não obrigatório para estudantes</option>';
         selectEscola.disabled = true;
         selectEscola.removeAttribute("required");
