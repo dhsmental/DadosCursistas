@@ -436,7 +436,7 @@
 <div id="custom-alert-overlay">
     <div id="custom-alert-box">
         <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/logo.jpeg" alt="Logo" class="alert-logo">
-        <h3>Sucesso!</h3>
+        <h3 id="custom-alert-title">Sucesso!</h3>
         <p id="custom-alert-message">Cadastro realizado com sucesso!</p>
         <button onclick="fecharAlertaCustomizado()">OK</button>
     </div>
@@ -483,7 +483,8 @@ const CSV_POR_UF = {
   "TO": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnTs95n0C-DHcZGDos7332ndYM4_rx7ZqF_I8l6eRRoeI_uktPGq5FN-e-ByM6xA/pub?gid=248095253&single=true&output=csv"
 };
 
-function mostrarAlertaCustomizado(mensagem) {
+function mostrarAlertaCustomizado(mensagem, titulo = "Sucesso!") {
+    document.getElementById("custom-alert-title").textContent = titulo;
     document.getElementById("custom-alert-message").textContent = mensagem;
     document.getElementById("custom-alert-overlay").style.display = "flex";
 }
@@ -622,6 +623,16 @@ function liberarDigitacaoManual() {
 form.addEventListener("submit", function(event) {
     event.preventDefault();
 
+    // Validação de E-mails iguais
+    const email = document.getElementById("email").value.trim();
+    const confirmEmail = document.getElementById("confirm_email").value.trim();
+
+    if (email !== confirmEmail) {
+        mostrarAlertaCustomizado("Os endereços de e-mail informados não coincidem. Por favor, verifique e tente novamente.", "Atenção");
+        document.getElementById("confirm_email").focus();
+        return;
+    }
+
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -652,13 +663,13 @@ form.addEventListener("submit", function(event) {
 
     fetch(urlGoogleScript, { method: "POST", body: formData, mode: "no-cors" })
     .then(() => {
-        mostrarAlertaCustomizado("Cadastro realizado com sucesso!");
+        mostrarAlertaCustomizado("Cadastro realizado com sucesso!", "Sucesso!");
         form.reset();
         atualizarEstadoCamposEscola();
     })
     .catch(error => {
         console.error("Erro:", error);
-        mostrarAlertaCustomizado("Erro na conexão ao enviar os dados.");
+        mostrarAlertaCustomizado("Erro na conexão ao enviar os dados.", "Erro");
     })
     .finally(() => {
         if (btnSubmit) {
