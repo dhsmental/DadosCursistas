@@ -512,8 +512,8 @@ selectMunicipio.addEventListener("change", function() {
         const codigoInep = item["codigo_inep"] || item["Código INEP"] || item["Codigo INEP"] || "";
         
         option.textContent = nomeEscola;
-        option.value = codigoInep; 
-        selectEscola.appendChild(option);
+	option.value = nomeEscola;
+	option.dataset.inep = codigoInep;
     });
 
     const optionOutra = document.createElement("option");
@@ -525,13 +525,21 @@ selectMunicipio.addEventListener("change", function() {
 });
 
 // 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
-selectEscola.addEventListener("change", function() {
+	selectEscola.addEventListener("change", function() {
+
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
-    } else {
-        campoInep.value = this.value;
-        campoInep.readOnly = true;
+        return;
     }
+
+    const opcaoSelecionada =
+        this.options[this.selectedIndex];
+
+    campoInep.value =
+        opcaoSelecionada.dataset.inep || "";
+
+    campoInep.readOnly = true;
+
 });
 
 function liberarDigitacaoManual() {
