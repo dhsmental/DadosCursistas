@@ -23,7 +23,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         overflow: hidden; 
         padding: 40px 50px;
-       box-sizing: border-box;
+        box-sizing: border-box;
     }
 
     .banner {
@@ -50,14 +50,11 @@
         font-size: 42px;
         margin-bottom: 20px;
     }
-   h1 {
-    font-size: 42px;
-    margin-bottom: 20px;
-}
 
-.description {
-    margin-bottom: 40px;
-} 
+    .description {
+        margin-bottom: 40px;
+    } 
+
     h2 {
         font-size: 20px;
         margin-top: 30px;
@@ -65,9 +62,10 @@
         border-bottom: 2px solid #1a73e8;
         padding-bottom: 5px;
     }
-#data_nascimento {
-    font-size: 14px;
-}
+
+    #data_nascimento {
+        font-size: 14px;
+    }
 
     p.description {
         font-size: 14px;
@@ -120,44 +118,40 @@
         margin-bottom: 5px;
         cursor: pointer;
     }
-  
 
-   
-.info-obrigatorio {
-    margin-right: auto;
-    font-size: 13px;
-    color: #555;
-    display: flex;
-    align-items: center;
-    line-height: 40px;
-}
+    .info-obrigatorio {
+        margin-right: auto;
+        font-size: 13px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        line-height: 40px;
+    }
 
-.asterisco {
-    color: #d93025;
-    font-weight: bold;
-    margin-right: 4px;
-}
+    .asterisco {
+        color: #d93025;
+        font-weight: bold;
+        margin-right: 4px;
+    }
 
+    button {
+        min-width: 100px;
+        height: 40px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
 
-button {
-    min-width: 100px;
-    height: 40px;
-    padding: 0 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-}
     .buttons {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    gap: 12px;
-    margin-top: 30px;
-}
-
-   
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 12px;
+        margin-top: 30px;
+    }
 
     .btn-submit {
         background-color: #1a73e8;
@@ -165,10 +159,66 @@ button {
     }
 
     .btn-reset {
-    background-color: #ffffff;
-    color: #3c4043;
-    border: 1px solid #dadce0;
-}
+        background-color: #ffffff;
+        color: #3c4043;
+        border: 1px solid #dadce0;
+    }
+
+    /* Estilos do Alerta Personalizado Centralizado */
+    #custom-alert-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #custom-alert-box {
+        background: #ffffff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: scaleIn 0.2s ease-in-out;
+    }
+
+    @keyframes scaleIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    #custom-alert-box h3 {
+        margin-top: 0;
+        color: #1a73e8;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    #custom-alert-box p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 25px;
+    }
+
+    #custom-alert-box button {
+        background-color: #1a73e8;
+        color: white;
+        font-size: 16px;
+        padding: 10px 30px;
+        border-radius: 6px;
+        width: 100%;
+    }
+
+    #custom-alert-box button:hover {
+        background-color: #1557b0;
+    }
 </style>
 </head>
 
@@ -177,7 +227,6 @@ button {
 	<div class="banner">
     	    <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/banner.jpeg" alt="Banner do Curso">
 	</div>
-
 
 <div class="form-container">
 
@@ -238,7 +287,6 @@ button {
       <label for="escolaridade">Escolaridade: <span class="required">*</span></label>
       <select id="escolaridade" name="escolaridade" required>
         <option value="" disabled selected>Selecione uma opção</option>
-        
         <option value="1">1 - Médio Incompleto</option>
         <option value="2">2 - Médio Completo</option>
         <option value="3">3 - Superior Incompleto</option>
@@ -248,7 +296,7 @@ button {
         <option value="8">8 - Especialização</option>
         <option value="9">9 - Mestrado</option>
         <option value="10">10 - Doutorado</option>
-	<option value="11">11 - Fundamental Incompleto</option>
+        <option value="11">11 - Fundamental Incompleto</option>
         <option value="12">12 - Fundamental Completo</option>
       </select>
     </div>
@@ -281,7 +329,7 @@ button {
         <option value="7">7 - Deficiência auditiva</option>
         <option value="8">8 - Deficiência múltipla</option>
         <option value="9">9 - Não declarado</option>
-	<option value="10">10 - Não possui deficiência</option>
+        <option value="10">10 - Não possui deficiência</option>
       </select>
     </div>
 
@@ -379,23 +427,30 @@ button {
     <input type="hidden" id="codigo_municipio" name="codigo_municipio">
 
     <div class="buttons">
+      <span class="info-obrigatorio">
+          <span class="asterisco">*</span> Campos obrigatórios
+      </span>
 
-    <span class="info-obrigatorio">
-        <span class="asterisco">*</span> Campos obrigatórios
-    </span>
+      <button type="reset" class="btn-reset">
+          Limpar formulário
+      </button>
 
-    <button type="reset" class="btn-reset">
-        Limpar formulário
-    </button>
-
-    <button type="submit" class="btn-submit">
-        Enviar
-    </button>
-
-</div>
+      <button type="submit" class="btn-submit">
+          Enviar
+      </button>
+    </div>
 
   </form>
 </div>
+</div>
+
+<!-- HTML do Alerta Personalizado -->
+<div id="custom-alert-overlay">
+    <div id="custom-alert-box">
+        <h3>Sucesso!</h3>
+        <p id="custom-alert-message">Cadastro realizado com sucesso!</p>
+        <button onclick="fecharAlertaCustomizado()">OK</button>
+    </div>
 </div>
 
 <!-- LÓGICA JAVASCRIPT -->
@@ -438,6 +493,15 @@ const CSV_POR_UF = {
   "TO": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnTs95n0C-DHcZGDos7332ndYM4_rx7ZqF_I8l6eRRoeI_uktPGq5FN-e-ByM6xA/pub?gid=248095253&single=true&output=csv"
 };
 
+function mostrarAlertaCustomizado(mensagem) {
+    document.getElementById("custom-alert-message").textContent = mensagem;
+    document.getElementById("custom-alert-overlay").style.display = "flex";
+}
+
+function fecharAlertaCustomizado() {
+    document.getElementById("custom-alert-overlay").style.display = "none";
+}
+
 // 1. ALTERAÇÃO DE ESTADO (UF)
 selectUF.addEventListener("change", async function () {
     const uf = this.value;
@@ -450,7 +514,6 @@ selectUF.addEventListener("change", async function () {
     campoInep.value = "";
     campoInep.readOnly = true;
 
-    // Carrega o CSV do estado correspondente
     const csvPromise = new Promise((resolve) => {
         const urlEstado = CSV_POR_UF[uf];
         if (!urlEstado) {
@@ -471,7 +534,6 @@ selectUF.addEventListener("change", async function () {
         });
     });
 
-    // Carrega os municípios direto da API do IBGE
     const ibgePromise = fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
         .then(res => {
             if (!res.ok) throw new Error("Erro na resposta do IBGE");
@@ -553,48 +615,30 @@ selectMunicipio.addEventListener("change", function() {
     });
 
     escolasFiltradas.forEach(item => {
+        const option = document.createElement("option");
+        const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
+        const codigoInep = item["codigo_inep"] || item["Código INEP"] || item["Codigo INEP"] || "";
 
-    const option = document.createElement("option");
+        option.textContent = nomeEscola;
+        option.value = nomeEscola;
+        option.dataset.inep = codigoInep;
 
-    const nomeEscola =
-        item["escola_onde_atua"] ||
-        item["Escola"] ||
-        "";
-
-    const codigoInep =
-        item["codigo_inep"] ||
-        item["Código INEP"] ||
-        item["Codigo INEP"] ||
-        "";
-
-    option.textContent = nomeEscola;
-    option.value = nomeEscola;
-    option.dataset.inep = codigoInep;
-
-    selectEscola.appendChild(option);
-
-});
-
+        selectEscola.appendChild(option);
+    });
     
     selectEscola.disabled = false;
 });
 
 // 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
 selectEscola.addEventListener("change", function() {
-
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
         return;
     }
 
-    const opcaoSelecionada =
-        this.options[this.selectedIndex];
-
-    campoInep.value =
-        opcaoSelecionada.dataset.inep || "";
-
+    const opcaoSelecionada = this.options[this.selectedIndex];
+    campoInep.value = opcaoSelecionada.dataset.inep || "";
     campoInep.readOnly = true;
-
 });
 
 function liberarDigitacaoManual() {
@@ -630,7 +674,7 @@ form.addEventListener("submit", function(event) {
         mode: "no-cors"
     })
     .then(() => {
-        alert("Cadastro realizado com sucesso!");
+        mostrarAlertaCustomizado("Cadastro realizado com sucesso!");
         form.reset();
         selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
         selectMunicipio.disabled = true;
@@ -639,7 +683,7 @@ form.addEventListener("submit", function(event) {
     })
     .catch(error => {
         console.error("Erro:", error);
-        alert("Erro na conexão ao enviar os dados.");
+        mostrarAlertaCustomizado("Erro na conexão ao enviar os dados.");
     })
     .finally(() => {
         if (btnSubmit) {
