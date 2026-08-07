@@ -722,14 +722,13 @@ form.addEventListener("submit", function(event) {
     });
 });
 
-// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DA ESCOLA CONFORME O PERFIL
-// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DA ESCOLA CONFORME O PERFIL
+// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DOS CAMPOS CONFORME O PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
-    const isProfissional = perfilSelecionado && perfilSelecionado.value === "Profissional da Educação";
+    const tipo = perfilSelecionado ? perfilSelecionado.value : "";
     
-    if (isProfissional) {
-        // Libera UF (o município e escola dependem da UF estar selecionada)
+    // Tanto Estudante quanto Profissional da Educação podem escolher Estado e Município
+    if (tipo === "Estudante" || tipo === "Profissional da Educação") {
         selectUF.disabled = false;
         selectUF.setAttribute("required", "required");
         
@@ -738,24 +737,35 @@ function atualizarEstadoCamposEscola() {
             selectMunicipio.disabled = false;
         }
         
-        // Se já houver município selecionado, libera a escola
-        if (selectMunicipio.value) {
-            selectEscola.disabled = false;
+        if (tipo === "Profissional da Educação") {
+            // Apenas para Profissional a escola e o INEP são obrigatórios/liberados
+            if (selectMunicipio.value) {
+                selectEscola.disabled = false;
+            }
+            selectEscola.setAttribute("required", "required");
+            campoInep.setAttribute("required", "required");
+        } else {
+            // Se for Estudante, a escola e o INEP ficam bloqueados e não obrigatórios
+            selectEscola.innerHTML = '<option value="">Não obrigatório para estudantes</option>';
+            selectEscola.disabled = true;
+            selectEscola.removeAttribute("required");
+
+            campoInep.value = "";
+            campoInep.readOnly = true;
+            campoInep.disabled = true;
+            campoInep.removeAttribute("required");
         }
-        
-        selectEscola.setAttribute("required", "required");
-        campoInep.setAttribute("required", "required");
     } else {
-        // Bloqueia e limpa tudo relacionado à escola se for Estudante ou se nada estiver selecionado ainda
+        // Se nenhum perfil estiver selecionado inicialmente
         selectUF.value = "";
         selectUF.disabled = true;
         selectUF.removeAttribute("required");
 
-        selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+        selectMunicipio.innerHTML = '<option value="">Selecione primeiro o perfil</option>';
         selectMunicipio.disabled = true;
         selectMunicipio.removeAttribute("required");
 
-        selectEscola.innerHTML = '<option value="">Selecione primeiro o profissional e o município</option>';
+        selectEscola.innerHTML = '<option value="">Selecione primeiro o perfil</option>';
         selectEscola.disabled = true;
         selectEscola.removeAttribute("required");
 
@@ -765,7 +775,6 @@ function atualizarEstadoCamposEscola() {
         campoInep.removeAttribute("required");
     }
 }
-
 // Eventos de escuta para os botões de rádio do perfil
 radiosPerfil.forEach(radio => {
     radio.addEventListener("change", atualizarEstadoCamposEscola);
