@@ -9,6 +9,25 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
+
+    .container-principal {
+        max-width: 900px; 
+        margin: 0 auto;   
+    }
+
+    .banner img {
+        width: 100%;      
+        height: auto;     
+        display: block;
+    }
+
+    .formulario {
+        width: 100%;      
+        background-color: white;
+        padding: 20px;
+        box-sizing: border-box; 
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
@@ -102,10 +121,10 @@
 </head>
 
 <body>
-
-<div class="banner">
-    <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/banner.jpeg" alt="Banner do Curso">
-</div>
+<div class="container-principal">
+	<div class="banner">
+    	    <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/banner.jpeg" alt="Banner do Curso">
+	</div>
 <div class="form-container">
 
   <h1>Dados Cadastrais de Cursistas - SISFOR</h1>
@@ -311,6 +330,7 @@
     </div>
 
   </form>
+</div>
 </div>
 
 <!-- LÓGICA JAVASCRIPT -->
