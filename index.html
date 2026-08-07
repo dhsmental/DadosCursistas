@@ -395,14 +395,16 @@ const CSV_POR_UF = {
 // 1. ALTERAÇÃO DE ESTADO (UF)
 selectUF.addEventListener("change", async function () {
     const uf = this.value;
+    if (!uf) return;
 
-    selectMunicipio.innerHTML = '<option value="">Baixando dados das escolas... Aguarde.</option>';
+    selectMunicipio.innerHTML = '<option value="">Carregando municípios e escolas...</option>';
     selectMunicipio.disabled = true;
     selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
     selectEscola.disabled = true;
     campoInep.value = "";
     campoInep.readOnly = true;
 
+    // Carrega o CSV do estado correspondente
     const csvPromise = new Promise((resolve) => {
         const urlEstado = CSV_POR_UF[uf];
         if (!urlEstado) {
@@ -417,14 +419,18 @@ selectUF.addEventListener("change", async function () {
                 resolve(resultado.data);
             },
             error: function(erro) {
-                console.error("Erro PapaParse:", erro);
+                console.error("Erro ao baixar CSV:", erro);
                 resolve([]);
             }
         });
     });
 
+    // Carrega os municípios direto da API do IBGE
     const ibgePromise = fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("Erro na resposta do IBGE");
+            return res.json();
+        })
         .catch(erro => {
             console.error("Erro IBGE:", erro);
             return [];
@@ -436,7 +442,7 @@ selectUF.addEventListener("change", async function () {
 
     selectMunicipio.innerHTML = '<option value="">Selecione um município</option>';
     
-    if (municipios.length > 0) {
+    if (municipios && municipios.length > 0) {
         municipios.forEach(m => {
             const option = document.createElement("option");
             option.value = m.nome;
@@ -446,7 +452,7 @@ selectUF.addEventListener("change", async function () {
         });
         selectMunicipio.disabled = false;
     } else {
-        selectMunicipio.innerHTML = '<option value="">Erro ao carregar municípios</option>';
+        selectMunicipio.innerHTML = '<option value="">Erro ao carregar municípios. Tente novamente.</option>';
     }
 });
 
@@ -458,9 +464,11 @@ selectMunicipio.addEventListener("change", function() {
 
     const optionSelecionada = selectMunicipio.options[selectMunicipio.selectedIndex];
     const codigoIbge = optionSelecionada?.dataset?.codigoIbge || ""; 
-    document.getElementById("codigo_municipio").value = codigoIbge;    
+    
+    const inputCodMun = document.getElementById("codigo_municipio");
+    if (inputCodMun) inputCodMun.value = codigoIbge;    
+    
     const codigoIbge6 = codigoIbge.substring(0, 6);
-
     const municipioSelecionado = selectMunicipio.value
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g,"")
@@ -487,7 +495,7 @@ selectMunicipio.addEventListener("change", function() {
     });
 
     if (escolasFiltradas.length === 0) {
-        selectEscola.innerHTML = '<option value="">Nenhuma escola encontrada</option>';
+        selectEscola.innerHTML = '<option value="">Nenhuma escola encontrada para este município</option>';
         liberarDigitacaoManual();
         return;
     }
@@ -504,7 +512,7 @@ selectMunicipio.addEventListener("change", function() {
         const codigoInep = item["codigo_inep"] || item["Código INEP"] || item["Codigo INEP"] || "";
         
         option.textContent = nomeEscola;
-        option.value = codigoInep; // Atribui o código INEP ao value do option
+        option.value = codigoInep; 
         selectEscola.appendChild(option);
     });
 
@@ -545,9 +553,11 @@ form.addEventListener("submit", function(event) {
     const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
     
     const btnSubmit = document.querySelector(".btn-submit");
-    const textoOriginal = btnSubmit.textContent;
-    btnSubmit.textContent = "Enviando...";
-    btnSubmit.disabled = true;
+    const textoOriginal = btnSubmit ? btnSubmit.textContent : "Enviar";
+    if (btnSubmit) {
+        btnSubmit.textContent = "Enviando...";
+        btnSubmit.disabled = true;
+    }
 
     const formData = new FormData(form);
 
@@ -569,8 +579,10 @@ form.addEventListener("submit", function(event) {
         alert("Erro na conexão ao enviar os dados.");
     })
     .finally(() => {
-        btnSubmit.textContent = textoOriginal;
-        btnSubmit.disabled = false;
+        if (btnSubmit) {
+            btnSubmit.textContent = textoOriginal;
+            btnSubmit.disabled = false;
+        }
     });
 });
 </script>
