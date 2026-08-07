@@ -472,17 +472,17 @@ selectUF.addEventListener("change", async function () {
       .toUpperCase();
 
     // Filtra cruzando NOME DO MUNICÍPIO ou CÓDIGO IBGE
+   // Filtra cruzando NOME DO MUNICÍPIO ou CÓDIGO IBGE (usando colunas em minúsculo)
     const escolasFiltradas = EscolasMuniCSV.filter(item => {
-        const temEscola = !!item["Escola"];
+        const temEscola = !!item["escola_onde_atua"];
         
-        // Verifica o nome do município no CSV 
-        const municipioCSV = (item["Município"] || item["Municipio"] || "")
+        const municipioCSV = (item["Município"] || item["Municipio"] || item["municipio"] || "")
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g,"")
           .trim()
           .toUpperCase();
 
-        const codMunCSV = String(item["Código Municipio"] || item["Codigo Municipio"] || "").trim();
+        const codMunCSV = String(item["codigo_municipio"] || item["Código Municipio"] || "").trim();
 
         const bateuMunicipio = (municipioCSV === municipioSelecionado) || 
                                (codMunCSV === codigoIbge) || 
@@ -497,14 +497,15 @@ selectUF.addEventListener("change", async function () {
         return;
     }
 
-    // Ordena as escolas em ordem alfabética
-    escolasFiltradas.sort((a, b) => (a["Escola"] || "").localeCompare(b["Escola"] || "", "pt-BR"));
+    // Ordena as escolas em ordem alfabética usando "escola_onde_atua"
+    escolasFiltradas.sort((a, b) => (a["escola_onde_atua"] || "").localeCompare(b["escola_onde_atua"] || "", "pt-BR"));
 
     // Adiciona as opções
     escolasFiltradas.forEach(item => {
         const option = document.createElement("option");
-        option.textContent = item["Escola"];
-        option.value = item["Código INEP"] || item["Codigo INEP"] || "";
+        option.textContent = item["escola_onde_atua"];
+        // Pega o código inep da coluna correta do seu print
+        option.value = item["codigo_inep"] || "";
         selectEscola.appendChild(option);
     });
 
@@ -517,17 +518,13 @@ selectUF.addEventListener("change", async function () {
     selectEscola.disabled = false;
 });
 
-// 3. SELEÇÃO DA ESCOLA -> Preenche o INEP
+// 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
 selectEscola.addEventListener("change", function() {
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
     } else {
-        // Encontra a escola selecionada na lista para pegar o código correspondente
-        const escolaSelecionada = escolasFiltradas.find(item => item["Escola"] === this.value);
-        
-        if (escolaSelecionada) {
-            campoInep.value = escolaSelecionada["INEP"]; // Substitua "INEP" pelo nome exato da coluna do código na sua base
-        }
+        // O value da option já é o codigo_inep, preenche direto
+        campoInep.value = this.value;
         campoInep.readOnly = true;
     }
 });
