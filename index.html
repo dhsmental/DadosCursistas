@@ -779,10 +779,13 @@ function atualizarEstadoCamposEscola() {
 if (radiosPerfil) {
     radiosPerfil.forEach(radio => {
         radio.addEventListener("change", () => {
-            // Reseta o valor do estado para vazio e dispara o evento de mudança para limpar município/escola
+            // Reseta UF, Município, Escola e INEP totalmente ao trocar o perfil
             selectUF.value = "";
             
-            // Dispara a função principal para atualizar os bloqueios e limpar os selects dependentes
+            selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+            selectMunicipio.value = "";
+            selectMunicipio.disabled = true;
+
             atualizarEstadoCamposEscola();
         });
     });
