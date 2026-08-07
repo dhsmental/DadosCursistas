@@ -679,14 +679,19 @@ form.addEventListener("submit", function(event) {
     // Cria o objeto com os dados do formulário
     const formData = new FormData(form);
 
-    // FORÇA O CPF E O INEP A ENTRAREM COMO TEXTO PURO (ADICIONANDO UM APÓSTROFE NA FRENTE)
-    const cpfAtual = formData.get("cpf");
-    if (cpfAtual && !cpfAtual.startsWith("'")) {
-        formData.set("cpf", "'" + cpfAtual);
+    // TRATAMENTO DO CPF: Força a preencher com zeros à esquerda até completar 11 dígitos
+    let cpfAtual = formData.get("cpf") || "";
+    cpfAtual = cpfAtual.replace(/\D/g, ""); // Remove qualquer caractere não numérico
+    if (cpfAtual.length > 0 && cpfAtual.length < 11) {
+        cpfAtual = cpfAtual.padStart(11, "0"); // Adiciona os zeros faltantes na frente
     }
+    // Adiciona o apóstrofe para o Google Sheets aceitar como texto puro
+    formData.set("cpf", "'" + cpfAtual);
 
-    const inepAtual = formData.get("inep");
-    if (inepAtual && !inepAtual.startsWith("'")) {
+    // TRATAMENTO DO INEP (caso tenha zeros à esquerda)
+    let inepAtual = formData.get("inep") || "";
+    inepAtual = inepAtual.replace(/\D/g, "");
+    if (inepAtual.length > 0) {
         formData.set("inep", "'" + inepAtual);
     }
 
