@@ -507,15 +507,27 @@ selectMunicipio.addEventListener("change", function() {
     });
 
     escolasFiltradas.forEach(item => {
-        const option = document.createElement("option");
-        const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
-        const codigoInep = item["codigo_inep"] || item["Código INEP"] || item["Codigo INEP"] || "";
-        
-        option.textContent = nomeEscola;
-	option.value = nomeEscola;
-	option.dataset.inep = codigoInep;
-	selectEscola.appendChild(option);
-    });
+
+    const option = document.createElement("option");
+
+    const nomeEscola =
+        item["escola_onde_atua"] ||
+        item["Escola"] ||
+        "";
+
+    const codigoInep =
+        item["codigo_inep"] ||
+        item["Código INEP"] ||
+        item["Codigo INEP"] ||
+        "";
+
+    option.textContent = nomeEscola;
+    option.value = nomeEscola;
+    option.dataset.inep = codigoInep;
+
+    selectEscola.appendChild(option);
+
+});
 
     const optionOutra = document.createElement("option");
     optionOutra.value = "OUTRA";
@@ -526,7 +538,7 @@ selectMunicipio.addEventListener("change", function() {
 });
 
 // 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
-	selectEscola.addEventListener("change", function() {
+selectEscola.addEventListener("change", function() {
 
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
