@@ -504,7 +504,7 @@ selectUF.addEventListener("change", async function () {
     escolasFiltradas.forEach(item => {
         const option = document.createElement("option");
         option.textContent = item["Escola"];
-        option.value = item["Escola"];
+        option.value = item["Código INEP"] || item["Codigo INEP"] || "";
         selectEscola.appendChild(option);
     });
 
