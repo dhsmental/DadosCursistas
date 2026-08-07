@@ -370,7 +370,7 @@
       </select>
     </div>
 
-    <!-- Rede de Ensino onde Atua -->
+    
     <div class="form-group radio-group">
       <label>Rede de Ensino onde Atua: <span class="required">*</span></label>
       <label><input type="radio" name="rede_ensino" value="Municipal" required> Municipal</label>
@@ -379,7 +379,7 @@
       <label><input type="radio" name="rede_ensino" value="Não se aplica"> Não se aplica</label>
     </div>
 
-    <!-- Vínculo com a Rede de Ensino -->
+    
     <div class="form-group radio-group">
       <label>Vínculo com a Rede de Ensino: <span class="required">*</span></label>
       <label><input type="radio" name="vinculo" value="1" required> 1 - Concursado/efetivo</label>
@@ -390,12 +390,28 @@
       <label><input type="radio" name="vinculo" value="100"> 100 - Outros</label>
     </div>
 
-    <!-- 3. LOCALIZAÇÃO E ESCOLA -->
-    <h2>Local de Atuação / Escola</h2>
 
+    
+    <h2>Informações do Cursista</h2>
+
+    
+    <div class="form-group">
+      <label>Perfil do Cursista: <span class="required">*</span></label>
+      <div style="display: flex; gap: 20px; padding: 10px 0;">
+        <label style="font-weight: normal; margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <input type="radio" name="tipo_cursista" value="Estudante" required style="width: auto; margin: 0;"> Estudante
+        </label>
+        <label style="font-weight: normal; margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <input type="radio" name="tipo_cursista" value="Profissional da Educação" style="width: auto; margin: 0;"> Profissional da Educação
+        </label>
+      </div>
+    </div
+
+    <!-- 3. LOCALIZAÇÃO E ESCOLA -->
+    
     <!-- Estado (UF) -->
     <div class="form-group">
-      <label for="uf">Estado onde atua/trabalha: <span class="required">*</span></label>
+      <label for="uf">Estado onde estuda / trabalha: <span class="required">*</span></label>
       <select id="uf" name="uf" required>
         <option value="" disabled selected>Selecione um estado</option>
         <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
@@ -412,7 +428,7 @@
 
     <!-- Município -->
     <div class="form-group">
-      <label for="municipio">Município em que trabalha/atua: <span class="required">*</span></label>
+      <label for="municipio">Município em que estuda / trabalha: <span class="required">*</span></label>
       <select id="municipio" name="municipio" disabled required>
         <option value="">Selecione primeiro o estado</option>
       </select>
@@ -689,7 +705,7 @@ form.addEventListener("submit", function(event) {
         }
     }
 
-    // TRATAMENTO DO INEP: Garante que também vá como texto puro
+    
     let inepInput = form.querySelector("#inep");
     if (inepInput) {
         let inepValor = inepInput.value.replace(/\D/g, "");
@@ -719,6 +735,30 @@ form.addEventListener("submit", function(event) {
         if (btnSubmit) {
             btnSubmit.textContent = textoOriginal;
             btnSubmit.disabled = false;
+        }
+    });
+});
+
+const radiosPerfil = document.querySelectorAll('input[name="tipo_cursista"]');
+
+radiosPerfil.forEach(radio => {
+    radio.addEventListener("change", function() {
+        const isEstudante = this.value === "Estudante";
+        
+        
+        selectEscola.disabled = isEstudante;
+        campoInep.disabled = isEstudante;
+        
+        // Remove ou adiciona a obrigatoriedade
+        if (isEstudante) {
+            selectEscola.removeAttribute("required");
+            campoInep.removeAttribute("required");
+            // Limpa os valores se bloquear
+            selectEscola.value = "";
+            campoInep.value = "";
+        } else {
+            selectEscola.setAttribute("required", "required");
+            campoInep.setAttribute("required", "required");
         }
     });
 });
