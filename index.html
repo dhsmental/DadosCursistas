@@ -360,6 +360,7 @@ const selectUF = document.getElementById("uf");
 const selectMunicipio = document.getElementById("municipio");
 const selectEscola = document.getElementById("escola");
 const campoInep = document.getElementById("inep");
+const form = document.getElementById("formCursistas");
 
 const CSV_POR_UF = {
   "AC": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnTs95n0C-DHcZGDos7332ndYM4_rx7ZqF_I8l6eRRoeI_uktPGq5FN-e-ByM6xA/pub?gid=919089555&single=true&output=csv",
@@ -402,7 +403,6 @@ selectUF.addEventListener("change", async function () {
     campoInep.value = "";
     campoInep.readOnly = true;
 
-    // A) Transforma o carregamento do PapaParse em uma Promise para esperar ele terminar
     const csvPromise = new Promise((resolve) => {
         const urlEstado = CSV_POR_UF[uf];
         if (!urlEstado) {
@@ -423,7 +423,6 @@ selectUF.addEventListener("change", async function () {
         });
     });
 
-    // B) Busca Municípios na API do IBGE
     const ibgePromise = fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
         .then(res => res.json())
         .catch(erro => {
@@ -431,20 +430,17 @@ selectUF.addEventListener("change", async function () {
             return [];
         });
 
-    // Aguarda AMBAS as requisições (IBGE e Google Sheets) finalizarem
     const [dadosCsv, municipios] = await Promise.all([csvPromise, ibgePromise]);
     
     EscolasMuniCSV = dadosCsv;
-    console.log(`UF ${uf} - Escolas carregadas do CSV:`, EscolasMuniCSV.length);
 
-    // Preenche o Select de Municípios
     selectMunicipio.innerHTML = '<option value="">Selecione um município</option>';
     
     if (municipios.length > 0) {
         municipios.forEach(m => {
             const option = document.createElement("option");
             option.value = m.nome;
-            option.dataset.codigoIbge = m.id; // Salva o ID do IBGE para cruzar com o CSV
+            option.dataset.codigoIbge = m.id;
             option.textContent = m.nome;
             selectMunicipio.appendChild(option);
         });
@@ -455,15 +451,15 @@ selectUF.addEventListener("change", async function () {
 });
 
 // 2. ALTERAÇÃO DE MUNICÍPIO -> Filtra a lista de escolas
-
-    selectMunicipio.addEventListener("change", function() {
+selectMunicipio.addEventListener("change", function() {
     selectEscola.innerHTML = '<option value="">Selecione uma escola</option>';
     campoInep.value = "";
+    campoInep.readOnly = true;
 
     const optionSelecionada = selectMunicipio.options[selectMunicipio.selectedIndex];
     const codigoIbge = optionSelecionada?.dataset?.codigoIbge || ""; 
-    document.getElementById("codigo_municipio").value = codigoIbge;	
-    const codigoIbge6 = codigoIbge.substring(0, 6); // Código de 6 dígitos (usado em algumas planilhas)
+    document.getElementById("codigo_municipio").value = codigoIbge;    
+    const codigoIbge6 = codigoIbge.substring(0, 6);
 
     const municipioSelecionado = selectMunicipio.value
       .normalize("NFD")
@@ -471,10 +467,9 @@ selectUF.addEventListener("change", async function () {
       .trim()
       .toUpperCase();
 
-    // Filtra cruzando NOME DO MUNICÍPIO ou CÓDIGO IBGE
-   // Filtra cruzando NOME DO MUNICÍPIO ou CÓDIGO IBGE (usando colunas em minúsculo)
     const escolasFiltradas = EscolasMuniCSV.filter(item => {
-        const temEscola = !!item["escola_onde_atua"];
+        const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
+        const temEscola = !!nomeEscola.trim();
         
         const municipioCSV = (item["Município"] || item["Municipio"] || item["municipio"] || "")
           .normalize("NFD")
@@ -497,19 +492,22 @@ selectUF.addEventListener("change", async function () {
         return;
     }
 
-    // Ordena as escolas em ordem alfabética usando "escola_onde_atua"
-    escolasFiltradas.sort((a, b) => (a["escola_onde_atua"] || "").localeCompare(b["escola_onde_atua"] || "", "pt-BR"));
+    escolasFiltradas.sort((a, b) => {
+        const nomeA = a["escola_onde_atua"] || a["Escola"] || "";
+        const nomeB = b["escola_onde_atua"] || b["Escola"] || "";
+        return nomeA.localeCompare(nomeB, "pt-BR");
+    });
 
-    // Adiciona as opções
     escolasFiltradas.forEach(item => {
         const option = document.createElement("option");
-        option.textContent = item["escola_onde_atua"];
-        // Pega o código inep da coluna correta do seu print
-        option.value = item["codigo_inep"] || "";
+        const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
+        const codigoInep = item["codigo_inep"] || item["Código INEP"] || item["Codigo INEP"] || "";
+        
+        option.textContent = nomeEscola;
+        option.value = codigoInep; // Atribui o código INEP ao value do option
         selectEscola.appendChild(option);
     });
 
-    // Opção para Outras Escolas
     const optionOutra = document.createElement("option");
     optionOutra.value = "OUTRA";
     optionOutra.textContent = "-- MINHA ESCOLA NÃO ESTÁ NA LISTA --";
@@ -523,7 +521,6 @@ selectEscola.addEventListener("change", function() {
     if (this.value === "OUTRA") {
         liberarDigitacaoManual();
     } else {
-        // O value da option já é o codigo_inep, preenche direto
         campoInep.value = this.value;
         campoInep.readOnly = true;
     }
@@ -535,51 +532,43 @@ function liberarDigitacaoManual() {
     campoInep.placeholder = "Digite o código INEP manualmente";
     campoInep.focus();
 }
-// Captura o envio do formulário
-const form = document.getElementById("formCursistas");
 
+// 4. ENVIO DO FORMULÁRIO
 form.addEventListener("submit", function(event) {
+    event.preventDefault();
 
     if (!form.checkValidity()) {
-
         form.reportValidity();
         return;
-
     }
 
-    event.preventDefault();
-   
-}); 
-    
-    
     const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
     
-    // Altera o texto do botão para mostrar que está carregando
     const btnSubmit = document.querySelector(".btn-submit");
     const textoOriginal = btnSubmit.textContent;
     btnSubmit.textContent = "Enviando...";
     btnSubmit.disabled = true;
 
-    // Coleta todos os dados do formulário
     const formData = new FormData(form);
 
-    // Envia os dados para o Google Sheets via POST
     fetch(urlGoogleScript, {
         method: "POST",
         body: formData,
         mode: "no-cors"
     })
     .then(() => {
-        
         alert("Cadastro realizado com sucesso!");
-        form.reset(); // Limpa o formulário
+        form.reset();
+        selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+        selectMunicipio.disabled = true;
+        selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
+        selectEscola.disabled = true;
     })
     .catch(error => {
         console.error("Erro:", error);
         alert("Erro na conexão ao enviar os dados.");
     })
     .finally(() => {
-        // Restaura o botão
         btnSubmit.textContent = textoOriginal;
         btnSubmit.disabled = false;
     });
