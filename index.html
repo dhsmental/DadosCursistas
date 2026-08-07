@@ -676,7 +676,19 @@ form.addEventListener("submit", function(event) {
         btnSubmit.disabled = true;
     }
 
+    // Cria o objeto com os dados do formulário
     const formData = new FormData(form);
+
+    // FORÇA O CPF E O INEP A ENTRAREM COMO TEXTO PURO (ADICIONANDO UM APÓSTROFE NA FRENTE)
+    const cpfAtual = formData.get("cpf");
+    if (cpfAtual && !cpfAtual.startsWith("'")) {
+        formData.set("cpf", "'" + cpfAtual);
+    }
+
+    const inepAtual = formData.get("inep");
+    if (inepAtual && !inepAtual.startsWith("'")) {
+        formData.set("inep", "'" + inepAtual);
+    }
 
     fetch(urlGoogleScript, {
         method: "POST",
