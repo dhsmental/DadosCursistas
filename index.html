@@ -514,6 +514,7 @@ selectMunicipio.addEventListener("change", function() {
         option.textContent = nomeEscola;
 	option.value = nomeEscola;
 	option.dataset.inep = codigoInep;
+	selectEscola.appendChild(option);
     });
 
     const optionOutra = document.createElement("option");
