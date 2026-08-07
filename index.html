@@ -542,7 +542,17 @@ function liberarDigitacaoManual() {
 const form = document.getElementById("formCursistas");
 
 form.addEventListener("submit", function(event) {
-    event.preventDefault(); // Impede a página de recarregar
+
+    if (!form.checkValidity()) {
+
+        form.reportValidity();
+        return;
+
+    }
+
+    event.preventDefault();
+   
+}); 
     
     
     const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
