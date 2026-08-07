@@ -658,7 +658,6 @@ function liberarDigitacaoManual() {
     campoInep.focus();
 }
 
-// 4. ENVIO DO FORMULÁRIO
 form.addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -676,23 +675,27 @@ form.addEventListener("submit", function(event) {
         btnSubmit.disabled = true;
     }
 
-    // Cria o objeto com os dados do formulário
     const formData = new FormData(form);
 
-    // TRATAMENTO DO CPF: Força a preencher com zeros à esquerda até completar 11 dígitos
-    let cpfAtual = formData.get("cpf") || "";
-    cpfAtual = cpfAtual.replace(/\D/g, ""); // Remove qualquer caractere não numérico
-    if (cpfAtual.length > 0 && cpfAtual.length < 11) {
-        cpfAtual = cpfAtual.padStart(11, "0"); // Adiciona os zeros faltantes na frente
+    // TRATAMENTO DO CPF: Pega o valor como string literal e garante os zeros à esquerda se precisar
+    let cpfInput = form.querySelector("#cpf");
+    if (cpfInput) {
+        let cpfValor = cpfInput.value.replace(/\D/g, "");
+        if (cpfValor.length > 0) {
+            // Se tiver menos de 11 dígitos, completa com zeros à esquerda
+            cpfValor = cpfValor.padStart(11, "0");
+            // Adiciona a aspa simples (') para travar como texto puro no Sheets
+            formData.set("cpf", "'" + cpfValor);
+        }
     }
-    // Adiciona o apóstrofe para o Google Sheets aceitar como texto puro
-    formData.set("cpf", "'" + cpfAtual);
 
-    // TRATAMENTO DO INEP (caso tenha zeros à esquerda)
-    let inepAtual = formData.get("inep") || "";
-    inepAtual = inepAtual.replace(/\D/g, "");
-    if (inepAtual.length > 0) {
-        formData.set("inep", "'" + inepAtual);
+    // TRATAMENTO DO INEP: Garante que também vá como texto puro
+    let inepInput = form.querySelector("#inep");
+    if (inepInput) {
+        let inepValor = inepInput.value.replace(/\D/g, "");
+        if (inepValor.length > 0) {
+            formData.set("inep", "'" + inepValor);
+        }
     }
 
     fetch(urlGoogleScript, {
