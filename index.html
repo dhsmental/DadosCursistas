@@ -105,7 +105,7 @@
         box-sizing: border-box;
     }
 
-    input[readonly] {
+    input[readonly], select:disabled, input:disabled {
         background-color: #e9ecef;
         cursor: not-allowed;
     }
@@ -194,7 +194,6 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* Estilo para a Logo dentro do Alerta */
     .alert-logo {
         width: 70px;
         height: 70px;
@@ -370,7 +369,6 @@
       </select>
     </div>
 
-    
     <div class="form-group radio-group">
       <label>Rede de Ensino onde Atua: <span class="required">*</span></label>
       <label><input type="radio" name="rede_ensino" value="Municipal" required> Municipal</label>
@@ -379,7 +377,6 @@
       <label><input type="radio" name="rede_ensino" value="Não se aplica"> Não se aplica</label>
     </div>
 
-    
     <div class="form-group radio-group">
       <label>Vínculo com a Rede de Ensino: <span class="required">*</span></label>
       <label><input type="radio" name="vinculo" value="1" required> 1 - Concursado/efetivo</label>
@@ -390,11 +387,8 @@
       <label><input type="radio" name="vinculo" value="100"> 100 - Outros</label>
     </div>
 
-
-    
     <h2>Informações do Cursista</h2>
 
-    
     <div class="form-group">
       <label>Perfil do Cursista: <span class="required">*</span></label>
       <div style="display: flex; gap: 20px; padding: 10px 0;">
@@ -405,7 +399,7 @@
             <input type="radio" name="tipo_cursista" value="Profissional da Educação" style="width: auto; margin: 0;"> Profissional da Educação
         </label>
       </div>
-    </div
+    </div> <!-- Tag div corrigida aqui -->
 
     <!-- 3. LOCALIZAÇÃO E ESCOLA -->
     
@@ -437,15 +431,15 @@
     <!-- Escola -->
     <div class="form-group">
       <label for="escola">Informe o nome da escola onde atua: </label>
-      <select id="escola" name="escola">
-        <option value="">Selecione primeiro o município</option>
+      <select id="escola" name="escola" disabled>
+        <option value="">Selecione primeiro o profissional da educação e o município</option>
       </select>
     </div>
 
     <!-- Código INEP -->
     <div class="form-group">
       <label for="inep">Código INEP da Escola: </label>
-      <input type="text" id="inep" name="inep" readonly required placeholder="Preenchido automaticamente">
+      <input type="text" id="inep" name="inep" readonly disabled placeholder="Preenchido automaticamente">
     </div>
 
     <!-- Campo Oculto: Código do Município -->
@@ -488,6 +482,7 @@ const selectMunicipio = document.getElementById("municipio");
 const selectEscola = document.getElementById("escola");
 const campoInep = document.getElementById("inep");
 const form = document.getElementById("formCursistas");
+const radiosPerfil = document.querySelectorAll('input[name="tipo_cursista"]');
 
 const CSV_POR_UF = {
   "AC": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRnTs95n0C-DHcZGDos7332ndYM4_rx7ZqF_I8l6eRRoeI_uktPGq5FN-e-ByM6xA/pub?gid=919089555&single=true&output=csv",
@@ -533,7 +528,7 @@ selectUF.addEventListener("change", async function () {
     const uf = this.value;
     if (!uf) return;
 
-    selectMunicipio.innerHTML = '<option value="">Carregando municípios e escolas...</option>';
+    selectMunicipio.innerHTML = '<option value="">Carregando municípios...</option>';
     selectMunicipio.disabled = true;
     selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
     selectEscola.disabled = true;
@@ -657,11 +652,6 @@ selectMunicipio.addEventListener("change", function() {
 
 // 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
 selectEscola.addEventListener("change", function() {
-    if (this.value === "OUTRA") {
-        liberarDigitacaoManual();
-        return;
-    }
-
     const opcaoSelecionada = this.options[this.selectedIndex];
     campoInep.value = opcaoSelecionada.dataset.inep || "";
     campoInep.readOnly = true;
@@ -693,18 +683,14 @@ form.addEventListener("submit", function(event) {
 
     const formData = new FormData(form);
 
-    // TRATAMENTO DO CPF: Pega o valor como string literal e garante os zeros à esquerda se precisar
     let cpfInput = form.querySelector("#cpf");
     if (cpfInput) {
         let cpfValor = cpfInput.value.replace(/\D/g, "");
         if (cpfValor.length > 0) {
-            // Se tiver menos de 11 dígitos, completa com zeros à esquerda
             cpfValor = cpfValor.padStart(11, "0");
-            // Adiciona a aspa simples (') para travar como texto puro no Sheets
             formData.set("cpf", "'" + cpfValor);
         }
     }
-
     
     let inepInput = form.querySelector("#inep");
     if (inepInput) {
@@ -722,10 +708,7 @@ form.addEventListener("submit", function(event) {
     .then(() => {
         mostrarAlertaCustomizado("Cadastro realizado com sucesso!");
         form.reset();
-        selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
-        selectMunicipio.disabled = true;
-        selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
-        selectEscola.disabled = true;
+        atualizarEstadoCamposEscola(); // Reseta os estados visuais após envio
     })
     .catch(error => {
         console.error("Erro:", error);
@@ -739,34 +722,55 @@ form.addEventListener("submit", function(event) {
     });
 });
 
-const radiosPerfil = document.querySelectorAll('input[name="tipo_cursista"]');
-
+// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DA ESCOLA CONFORME O PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
-    const isEstudante = perfilSelecionado && perfilSelecionado.value === "Estudante";
+    const isProfissional = perfilSelecionado && perfilSelecionado.value === "Profissional da Educação";
     
-    selectEscola.disabled = isEstudante;
-    campoInep.disabled = isEstudante;
-    
-    if (isEstudante) {
-        selectEscola.removeAttribute("required");
-        campoInep.removeAttribute("required");
-        selectEscola.value = "";
-        campoInep.value = "";
-    } else {
+    if (isProfissional) {
+        // Libera UF (o municipio e escola dependem da UF estar selecionada depois)
+        selectUF.disabled = false;
+        selectUF.setAttribute("required", "required");
+        
+        // Se já houver UF selecionada, libera o município
+        if (selectUF.value) {
+            selectMunicipio.disabled = false;
+        }
+        
+        // Se já houver município selecionado, libera a escola
+        if (selectMunicipio.value) {
+            selectEscola.disabled = false;
+        }
+        
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
+    } else {
+        // Bloqueia e limpa tudo relacionado à escola se for Estudante ou nada selecionado
+        selectUF.value = "";
+        selectUF.disabled = true;
+        selectUF.removeAttribute("required");
+
+        selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+        selectMunicipio.disabled = true;
+        selectMunicipio.removeAttribute("required");
+
+        selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
+        selectEscola.disabled = true;
+        selectEscola.removeAttribute("required");
+
+        campoInep.value = "";
+        campoInep.disabled = true;
+        campoInep.removeAttribute("required");
     }
 }
 
-// Adiciona o evento de mudança em cada rádio
+// Eventos de escuta para os botões de rádio do perfil
 radiosPerfil.forEach(radio => {
     radio.addEventListener("change", atualizarEstadoCamposEscola);
 });
 
-// Executa assim que a página é carregada para respeitar o estado inicial
+// Executa assim que a página é carregada para travar os campos inicialmente
 document.addEventListener("DOMContentLoaded", atualizarEstadoCamposEscola);
-
 </script>
 
 </body>
