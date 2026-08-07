@@ -51,10 +51,6 @@
         margin-bottom: 20px;
     }
 
-    .description {
-        margin-bottom: 40px;
-    } 
-
     h2 {
         font-size: 20px;
         margin-top: 30px;
@@ -63,14 +59,10 @@
         padding-bottom: 5px;
     }
 
-    #data_nascimento {
-        font-size: 14px;
-    }
-
     p.description {
         font-size: 14px;
         color: #555;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
 
     .form-group {
@@ -246,51 +238,43 @@
     <!-- 1. DADOS PESSOAIS -->
     <h2>Dados Pessoais</h2>
 
-    <!-- E-mail -->
     <div class="form-group">
       <label for="email">E-mail: <span class="required">*</span></label>
       <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
     </div>
 
-    <!-- Nome Completo -->
     <div class="form-group">
       <label for="nome">Nome Completo: <span class="required">*</span></label>
       <input type="text" id="nome" name="nome" placeholder="Sua resposta" required>
     </div>
 
-    <!-- Confirmação de E-mail -->
     <div class="form-group">
       <label for="confirm_email">Confirme seu endereço de e-mail: <span class="required">*</span></label>
       <div class="help-text">Digite o e-mail com atenção, pois ele será utilizado para envio das comunicações do curso.</div>
       <input type="email" id="confirm_email" name="confirm_email" placeholder="Sua resposta" required>
     </div>
 
-    <!-- Data de Nascimento -->
     <div class="form-group">
       <label for="data_nascimento">Data de Nascimento: <span class="required">*</span></label>
       <input type="date" id="data_nascimento" name="data_nascimento" required>
     </div>
 
-    <!-- Gênero -->
     <div class="form-group radio-group">
       <label>Gênero: <span class="required">*</span></label>
       <label><input type="radio" name="genero" value="Masculino" required> Masculino</label>
       <label><input type="radio" name="genero" value="Feminino"> Feminino</label>
     </div>
 
-    <!-- CPF -->
     <div class="form-group">
       <label for="cpf">CPF: (apenas números) <span class="required">*</span></label>
       <input type="tel" id="cpf" name="cpf" pattern="\d*" maxlength="11" placeholder="Sua resposta" required>
     </div>
 
-    <!-- Telefone -->
     <div class="form-group">
       <label for="telefone">Telefone com DDD <span class="required">*</span></label>
       <input type="tel" id="telefone" name="telefone" placeholder="Sua resposta" required>
     </div>
 
-    <!-- Escolaridade -->
     <div class="form-group">
       <label for="escolaridade">Escolaridade: <span class="required">*</span></label>
       <select id="escolaridade" name="escolaridade" required>
@@ -309,7 +293,6 @@
       </select>
     </div>
 
-    <!-- Raça/Etnia -->
     <div class="form-group">
       <label for="raca">Raça/Etnia: <span class="required">*</span></label>
       <select id="raca" name="raca" required>
@@ -323,7 +306,6 @@
       </select>
     </div>
 
-    <!-- Deficiência -->
     <div class="form-group">
       <label for="deficiencia">Deficiência: <span class="required">*</span></label>
       <select id="deficiencia" name="deficiencia" required>
@@ -344,7 +326,6 @@
     <!-- 2. INFORMAÇÕES PROFISSIONAIS -->
     <h2>Informações Profissionais</h2>
 
-    <!-- Função que exerce -->
     <div class="form-group">
       <label for="funcao">Função que exerce: <span class="required">*</span></label>
       <select id="funcao" name="funcao" required>
@@ -399,11 +380,9 @@
             <input type="radio" name="tipo_cursista" value="Profissional da Educação" style="width: auto; margin: 0;"> Profissional da Educação
         </label>
       </div>
-    </div> <!-- Tag div corrigida aqui -->
+    </div>
 
     <!-- 3. LOCALIZAÇÃO E ESCOLA -->
-    
-    <!-- Estado (UF) -->
     <div class="form-group">
       <label for="uf">Estado onde estuda / trabalha: <span class="required">*</span></label>
       <select id="uf" name="uf" required>
@@ -420,7 +399,6 @@
       </select>
     </div>
 
-    <!-- Município -->
     <div class="form-group">
       <label for="municipio">Município em que estuda / trabalha: <span class="required">*</span></label>
       <select id="municipio" name="municipio" disabled required>
@@ -428,7 +406,6 @@
       </select>
     </div>
 
-    <!-- Escola -->
     <div class="form-group">
       <label for="escola">Informe o nome da escola onde atua: </label>
       <select id="escola" name="escola" disabled>
@@ -436,34 +413,26 @@
       </select>
     </div>
 
-    <!-- Código INEP -->
     <div class="form-group">
       <label for="inep">Código INEP da Escola: </label>
       <input type="text" id="inep" name="inep" readonly disabled placeholder="Preenchido automaticamente">
     </div>
 
-    <!-- Campo Oculto: Código do Município -->
     <input type="hidden" id="codigo_municipio" name="codigo_municipio">
 
     <div class="buttons">
       <span class="info-obrigatorio">
           <span class="asterisco">*</span> Campos obrigatórios
       </span>
-
-      <button type="reset" class="btn-reset">
-          Limpar formulário
-      </button>
-
-      <button type="submit" class="btn-submit">
-          Enviar
-      </button>
+      <button type="reset" class="btn-reset">Limpar formulário</button>
+      <button type="submit" class="btn-submit">Enviar</button>
     </div>
 
   </form>
 </div>
 </div>
 
-<!-- HTML do Alerta Personalizado com a Logo -->
+<!-- Alerta Personalizado -->
 <div id="custom-alert-overlay">
     <div id="custom-alert-box">
         <img src="https://raw.githubusercontent.com/dhsmental/DadosCursistas/main/logo.jpeg" alt="Logo" class="alert-logo">
@@ -473,7 +442,7 @@
     </div>
 </div>
 
-<!-- LÓGICA JAVASCRIPT -->
+<!-- JAVASCRIPT OTIMIZADO -->
 <script>
 let EscolasMuniCSV = [];
 
@@ -530,10 +499,15 @@ selectUF.addEventListener("change", async function () {
 
     selectMunicipio.innerHTML = '<option value="">Carregando municípios...</option>';
     selectMunicipio.disabled = true;
-    selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
-    selectEscola.disabled = true;
-    campoInep.value = "";
-    campoInep.readOnly = true;
+    
+    const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked')?.value;
+    
+    if (perfilSelecionado === "Profissional da Educação") {
+        selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
+        selectEscola.disabled = true;
+        campoInep.value = "";
+        campoInep.readOnly = true;
+    }
 
     const csvPromise = new Promise((resolve) => {
         const urlEstado = CSV_POR_UF[uf];
@@ -545,28 +519,16 @@ selectUF.addEventListener("change", async function () {
             download: true,
             header: true,
             skipEmptyLines: true,
-            complete: function(resultado) {
-                resolve(resultado.data);
-            },
-            error: function(erro) {
-                console.error("Erro ao baixar CSV:", erro);
-                resolve([]);
-            }
+            complete: (res) => resolve(res.data),
+            error: (err) => { console.error("Erro CSV:", err); resolve([]); }
         });
     });
 
     const ibgePromise = fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`)
-        .then(res => {
-            if (!res.ok) throw new Error("Erro na resposta do IBGE");
-            return res.json();
-        })
-        .catch(erro => {
-            console.error("Erro IBGE:", erro);
-            return [];
-        });
+        .then(res => { if (!res.ok) throw new Error("Erro IBGE"); return res.json(); })
+        .catch(err => { console.error("Erro IBGE:", err); return []; });
 
     const [dadosCsv, municipios] = await Promise.all([csvPromise, ibgePromise]);
-    
     EscolasMuniCSV = dadosCsv;
 
     selectMunicipio.innerHTML = '<option value="">Selecione um município</option>';
@@ -581,50 +543,44 @@ selectUF.addEventListener("change", async function () {
         });
         selectMunicipio.disabled = false;
     } else {
-        selectMunicipio.innerHTML = '<option value="">Erro ao carregar municípios. Tente novamente.</option>';
+        selectMunicipio.innerHTML = '<option value="">Erro ao carregar municípios.</option>';
     }
 });
 
-// 2. ALTERAÇÃO DE MUNICÍPIO -> Filtra a lista de escolas
+// 2. ALTERAÇÃO DE MUNICÍPIO
 selectMunicipio.addEventListener("change", function() {
-    selectEscola.innerHTML = '<option value="">Selecione uma escola</option>';
-    campoInep.value = "";
-    campoInep.readOnly = true;
+    const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked')?.value;
 
     const optionSelecionada = selectMunicipio.options[selectMunicipio.selectedIndex];
     const codigoIbge = optionSelecionada?.dataset?.codigoIbge || ""; 
     
     const inputCodMun = document.getElementById("codigo_municipio");
     if (inputCodMun) inputCodMun.value = codigoIbge;    
+
+    // Se for estudante, não precisa processar busca de escolas
+    if (perfilSelecionado === "Estudante") return;
+
+    selectEscola.innerHTML = '<option value="">Selecione uma escola</option>';
+    campoInep.value = "";
+    campoInep.readOnly = true;
     
     const codigoIbge6 = codigoIbge.substring(0, 6);
-    const municipioSelecionado = selectMunicipio.value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g,"")
-      .trim()
-      .toUpperCase();
+    const municipioSelecionado = selectMunicipio.value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toUpperCase();
 
     const escolasFiltradas = EscolasMuniCSV.filter(item => {
         const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
         const temEscola = !!nomeEscola.trim();
         
-        const municipioCSV = (item["Município"] || item["Municipio"] || item["municipio"] || "")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g,"")
-          .trim()
-          .toUpperCase();
-
+        const municipioCSV = (item["Município"] || item["Municipio"] || item["municipio"] || "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toUpperCase();
         const codMunCSV = String(item["codigo_municipio"] || item["Código Municipio"] || "").trim();
 
-        const bateuMunicipio = (municipioCSV === municipioSelecionado) || 
-                               (codMunCSV === codigoIbge) || 
-                               (codMunCSV === codigoIbge6);
+        const bateuMunicipio = (municipioCSV === municipioSelecionado) || (codMunCSV === codigoIbge) || (codMunCSV === codigoIbge6);
 
         return temEscola && bateuMunicipio;
     });
 
     if (escolasFiltradas.length === 0) {
-        selectEscola.innerHTML = '<option value="">Nenhuma escola encontrada para este município</option>';
+        selectEscola.innerHTML = '<option value="">Nenhuma escola encontrada</option>';
         liberarDigitacaoManual();
         return;
     }
@@ -643,14 +599,13 @@ selectMunicipio.addEventListener("change", function() {
         option.textContent = nomeEscola;
         option.value = nomeEscola;
         option.dataset.inep = codigoInep;
-
         selectEscola.appendChild(option);
     });
     
     selectEscola.disabled = false;
 });
 
-// 3. SELEÇÃO DA ESCOLA -> Preenche o INEP automaticamente
+// 3. SELEÇÃO DA ESCOLA
 selectEscola.addEventListener("change", function() {
     const opcaoSelecionada = this.options[this.selectedIndex];
     campoInep.value = opcaoSelecionada.dataset.inep || "";
@@ -673,9 +628,9 @@ form.addEventListener("submit", function(event) {
     }
 
     const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
-    
     const btnSubmit = document.querySelector(".btn-submit");
     const textoOriginal = btnSubmit ? btnSubmit.textContent : "Enviar";
+    
     if (btnSubmit) {
         btnSubmit.textContent = "Enviando...";
         btnSubmit.disabled = true;
@@ -686,29 +641,20 @@ form.addEventListener("submit", function(event) {
     let cpfInput = form.querySelector("#cpf");
     if (cpfInput) {
         let cpfValor = cpfInput.value.replace(/\D/g, "");
-        if (cpfValor.length > 0) {
-            cpfValor = cpfValor.padStart(11, "0");
-            formData.set("cpf", "'" + cpfValor);
-        }
+        if (cpfValor.length > 0) formData.set("cpf", "'" + cpfValor.padStart(11, "0"));
     }
     
     let inepInput = form.querySelector("#inep");
-    if (inepInput) {
+    if (inepInput && !inepInput.disabled) {
         let inepValor = inepInput.value.replace(/\D/g, "");
-        if (inepValor.length > 0) {
-            formData.set("inep", "'" + inepValor);
-        }
+        if (inepValor.length > 0) formData.set("inep", "'" + inepValor);
     }
 
-    fetch(urlGoogleScript, {
-        method: "POST",
-        body: formData,
-        mode: "no-cors"
-    })
+    fetch(urlGoogleScript, { method: "POST", body: formData, mode: "no-cors" })
     .then(() => {
         mostrarAlertaCustomizado("Cadastro realizado com sucesso!");
         form.reset();
-        atualizarEstadoCamposEscola(); // Reseta os estados visuais após envio
+        atualizarEstadoCamposEscola();
     })
     .catch(error => {
         console.error("Erro:", error);
@@ -722,7 +668,7 @@ form.addEventListener("submit", function(event) {
     });
 });
 
-// Garante que o estado dos campos seja aplicado imediatamente e em qualquer mudança
+// GERENCIAMENTO DE ESTADO DOS CAMPOS POR PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const tipo = perfilSelecionado ? perfilSelecionado.value : "";
@@ -752,19 +698,15 @@ function atualizarEstadoCamposEscola() {
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
 
-        // Se já tiver município selecionado, reativa o select de escolas e dispara a função que busca as escolas do município
         if (selectMunicipio.value) {
             selectEscola.disabled = false;
-            if (typeof carregarEscolasPorMunicipio === "function") {
-                carregarEscolasPorMunicipio(selectUF.value, selectMunicipio.value);
-            }
         } else {
             selectEscola.disabled = true;
             selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
         }
     } else {
-        // Se for Estudante, desativa e limpa os campos de escola/INEP
         selectEscola.innerHTML = '<option value="">Não obrigatório para estudantes</option>';
+        selectEscola.value = "";
         selectEscola.disabled = true;
         selectEscola.removeAttribute("required");
 
@@ -772,6 +714,7 @@ function atualizarEstadoCamposEscola() {
         campoInep.readOnly = true;
         campoInep.disabled = true;
         campoInep.removeAttribute("required");
+        campoInep.placeholder = "Preenchido automaticamente";
     }
 }
 
@@ -779,23 +722,16 @@ function atualizarEstadoCamposEscola() {
 if (radiosPerfil) {
     radiosPerfil.forEach(radio => {
         radio.addEventListener("change", () => {
-            // Reseta UF, Município, Escola e INEP totalmente ao trocar o perfil
             selectUF.value = "";
-            
             selectMunicipio.innerHTML = '<option value="">Selecione primeiro o estado</option>';
             selectMunicipio.value = "";
             selectMunicipio.disabled = true;
-
             atualizarEstadoCamposEscola();
         });
     });
 }
 
-// Ouve mudanças na UF e Município para reavaliar os estados
 selectUF.addEventListener("change", atualizarEstadoCamposEscola);
-selectMunicipio.addEventListener("change", atualizarEstadoCamposEscola);
-
-// Executa ao carregar a página
 document.addEventListener("DOMContentLoaded", atualizarEstadoCamposEscola);
 </script>
 
