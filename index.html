@@ -722,50 +722,46 @@ form.addEventListener("submit", function(event) {
     });
 });
 
-// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DOS CAMPOS CONFORME O PERFIL
+// Garante que o estado dos campos seja aplicado imediatamente e em qualquer mudança
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const tipo = perfilSelecionado ? perfilSelecionado.value : "";
     
-    // Tanto Estudante quanto Profissional da Educação podem escolher Estado e Município
-    if (tipo === "Estudante" || tipo === "Profissional da Educação") {
-        selectUF.disabled = false;
-        selectUF.setAttribute("required", "required");
-        
-        // Se já houver UF selecionada, libera o município
-        if (selectUF.value) {
-            selectMunicipio.disabled = false;
-        }
-        
-        if (tipo === "Profissional da Educação") {
-            // Apenas para Profissional a escola e o INEP são obrigatórios/liberados
-            if (selectMunicipio.value) {
-                selectEscola.disabled = false;
-            }
-            selectEscola.setAttribute("required", "required");
-            campoInep.setAttribute("required", "required");
-        } else {
-            // Se for Estudante, a escola e o INEP ficam bloqueados e não obrigatórios
-            selectEscola.innerHTML = '<option value="">Não obrigatório para estudantes</option>';
-            selectEscola.disabled = true;
-            selectEscola.removeAttribute("required");
-
-            campoInep.value = "";
-            campoInep.readOnly = true;
-            campoInep.disabled = true;
-            campoInep.removeAttribute("required");
-        }
-    } else {
-        // Se nenhum perfil estiver selecionado inicialmente
+    // Se nenhum perfil foi escolhido, trava tudo
+    if (!tipo) {
         selectUF.value = "";
         selectUF.disabled = true;
-        selectUF.removeAttribute("required");
-
         selectMunicipio.innerHTML = '<option value="">Selecione primeiro o perfil</option>';
         selectMunicipio.disabled = true;
-        selectMunicipio.removeAttribute("required");
-
         selectEscola.innerHTML = '<option value="">Selecione primeiro o perfil</option>';
+        selectEscola.disabled = true;
+        campoInep.value = "";
+        campoInep.disabled = true;
+        return;
+    }
+
+    // Tanto Estudante quanto Profissional podem escolher UF e Município
+    selectUF.disabled = false;
+    selectUF.setAttribute("required", "required");
+
+    if (selectUF.value) {
+        selectMunicipio.disabled = false;
+    } else {
+        selectMunicipio.disabled = true;
+    }
+
+    // Regras específicas para Escola e INEP baseadas no perfil
+    if (tipo === "Profissional da Educação") {
+        if (selectMunicipio.value) {
+            selectEscola.disabled = false;
+        } else {
+            selectEscola.disabled = true;
+        }
+        selectEscola.setAttribute("required", "required");
+        campoInep.setAttribute("required", "required");
+    } else {
+        // Se for Estudante, bloqueia a escola e o INEP independentemente do município
+        selectEscola.innerHTML = '<option value="">Não obrigatório para estudantes</option>';
         selectEscola.disabled = true;
         selectEscola.removeAttribute("required");
 
@@ -775,12 +771,19 @@ function atualizarEstadoCamposEscola() {
         campoInep.removeAttribute("required");
     }
 }
-// Eventos de escuta para os botões de rádio do perfil
-radiosPerfil.forEach(radio => {
-    radio.addEventListener("change", atualizarEstadoCamposEscola);
-});
 
-// Executa obrigatoriamente assim que a página é carregada para travar os campos no início
+// Ouve mudanças nos rádios de perfil
+if (radiosPerfil) {
+    radiosPerfil.forEach(radio => {
+        radio.addEventListener("change", atualizarEstadoCamposEscola);
+    });
+}
+
+// Ouve mudanças na UF e Município para reavaliar os estados
+selectUF.addEventListener("change", atualizarEstadoCamposEscola);
+selectMunicipio.addEventListener("change", atualizarEstadoCamposEscola);
+
+// Executa ao carregar a página
 document.addEventListener("DOMContentLoaded", atualizarEstadoCamposEscola);
 </script>
 
