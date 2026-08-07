@@ -741,27 +741,32 @@ form.addEventListener("submit", function(event) {
 
 const radiosPerfil = document.querySelectorAll('input[name="tipo_cursista"]');
 
+function atualizarEstadoCamposEscola() {
+    const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
+    const isEstudante = perfilSelecionado && perfilSelecionado.value === "Estudante";
+    
+    selectEscola.disabled = isEstudante;
+    campoInep.disabled = isEstudante;
+    
+    if (isEstudante) {
+        selectEscola.removeAttribute("required");
+        campoInep.removeAttribute("required");
+        selectEscola.value = "";
+        campoInep.value = "";
+    } else {
+        selectEscola.setAttribute("required", "required");
+        campoInep.setAttribute("required", "required");
+    }
+}
+
+// Adiciona o evento de mudança em cada rádio
 radiosPerfil.forEach(radio => {
-    radio.addEventListener("change", function() {
-        const isEstudante = this.value === "Estudante";
-        
-        
-        selectEscola.disabled = isEstudante;
-        campoInep.disabled = isEstudante;
-        
-        // Remove ou adiciona a obrigatoriedade
-        if (isEstudante) {
-            selectEscola.removeAttribute("required");
-            campoInep.removeAttribute("required");
-            // Limpa os valores se bloquear
-            selectEscola.value = "";
-            campoInep.value = "";
-        } else {
-            selectEscola.setAttribute("required", "required");
-            campoInep.setAttribute("required", "required");
-        }
-    });
+    radio.addEventListener("change", atualizarEstadoCamposEscola);
 });
+
+// Executa assim que a página é carregada para respeitar o estado inicial
+document.addEventListener("DOMContentLoaded", atualizarEstadoCamposEscola);
+
 </script>
 
 </body>
