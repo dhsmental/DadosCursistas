@@ -723,12 +723,13 @@ form.addEventListener("submit", function(event) {
 });
 
 // FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DA ESCOLA CONFORME O PERFIL
+// FUNÇÃO PARA CONTROLAR A LIBERAÇÃO DA ESCOLA CONFORME O PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const isProfissional = perfilSelecionado && perfilSelecionado.value === "Profissional da Educação";
     
     if (isProfissional) {
-        // Libera UF (o municipio e escola dependem da UF estar selecionada depois)
+        // Libera UF (o município e escola dependem da UF estar selecionada)
         selectUF.disabled = false;
         selectUF.setAttribute("required", "required");
         
@@ -745,7 +746,7 @@ function atualizarEstadoCamposEscola() {
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
     } else {
-        // Bloqueia e limpa tudo relacionado à escola se for Estudante ou nada selecionado
+        // Bloqueia e limpa tudo relacionado à escola se for Estudante ou se nada estiver selecionado ainda
         selectUF.value = "";
         selectUF.disabled = true;
         selectUF.removeAttribute("required");
@@ -754,11 +755,12 @@ function atualizarEstadoCamposEscola() {
         selectMunicipio.disabled = true;
         selectMunicipio.removeAttribute("required");
 
-        selectEscola.innerHTML = '<option value="">Selecione primeiro o município</option>';
+        selectEscola.innerHTML = '<option value="">Selecione primeiro o profissional e o município</option>';
         selectEscola.disabled = true;
         selectEscola.removeAttribute("required");
 
         campoInep.value = "";
+        campoInep.readOnly = true;
         campoInep.disabled = true;
         campoInep.removeAttribute("required");
     }
@@ -769,7 +771,7 @@ radiosPerfil.forEach(radio => {
     radio.addEventListener("change", atualizarEstadoCamposEscola);
 });
 
-// Executa assim que a página é carregada para travar os campos inicialmente
+// Executa obrigatoriamente assim que a página é carregada para travar os campos no início
 document.addEventListener("DOMContentLoaded", atualizarEstadoCamposEscola);
 </script>
 
