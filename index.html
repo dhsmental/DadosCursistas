@@ -778,7 +778,13 @@ function atualizarEstadoCamposEscola() {
 // Ouve mudanças nos rádios de perfil
 if (radiosPerfil) {
     radiosPerfil.forEach(radio => {
-        radio.addEventListener("change", atualizarEstadoCamposEscola);
+        radio.addEventListener("change", () => {
+            // Reseta o valor do estado para vazio e dispara o evento de mudança para limpar município/escola
+            selectUF.value = "";
+            
+            // Dispara a função principal para atualizar os bloqueios e limpar os selects dependentes
+            atualizarEstadoCamposEscola();
+        });
     });
 }
 
