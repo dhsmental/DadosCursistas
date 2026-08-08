@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dados Cadastrais de Novos Cursistas - SISFOR</title>
+  <title>Dados Cadastrais de Cursistas - SISFOR</title>
   
   <!-- Importação da Biblioteca PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -16,16 +16,15 @@
     }
 
     .container-principal {
-    max-width: 1000px; 
-    width: 100%;
-    margin: 0 auto;   
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    overflow: hidden; 
-    padding: 40px 20px; /* Reduzido de 50px para 20px nas laterais */
-    box-sizing: border-box;
-}
+        max-width: 1000px; 
+        margin: 0 auto;   
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        overflow: hidden; 
+        padding: 40px 50px;
+        box-sizing: border-box;
+    }
 
     .banner {
         margin: 0;
@@ -48,10 +47,9 @@
     }
 
     h1 {
-    font-size: clamp(24px, 3vw, 42px);
-    margin-bottom: 20px;
-    white-space: nowrap;
-}
+        font-size: 42px;
+        margin-bottom: 20px;
+    }
 
     h2 {
         font-size: 20px;
@@ -232,8 +230,8 @@
 
 <div class="form-container">
 
-  <h1>Dados Cadastrais de Novos Cursistas - SISFOR</h1>
-  <p class="description">Formulário para coleta de dados de novos alunos inscritos no curso de Direitos Humanos e Saúde Mental - UNIPAMPA</p>
+  <h1>Dados Cadastrais de Cursistas - SISFOR</h1>
+  <p class="description">Formulário para coleta de dados de alunos inscritos no curso de Direitos Humanos e Saúde Mental - UNIPAMPA</p>
 
   <form id="formCursistas">
     
@@ -594,12 +592,6 @@ selectMunicipio.addEventListener("change", function() {
         return nomeA.localeCompare(nomeB, "pt-BR");
     });
 
-    escolasFiltradas.sort((a, b) => {
-        const nomeA = a["escola_onde_atua"] || a["Escola"] || "";
-        const nomeB = b["escola_onde_atua"] || b["Escola"] || "";
-        return nomeA.localeCompare(nomeB, "pt-BR");
-    });
-
     escolasFiltradas.forEach(item => {
         const option = document.createElement("option");
         const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
@@ -623,20 +615,15 @@ selectMunicipio.addEventListener("change", function() {
 });
 
 // 3. SELEÇÃO DA ESCOLA
+// 3. SELEÇÃO DA ESCOLA
 selectEscola.addEventListener("change", function() {
     const opcaoSelecionada = this.options[this.selectedIndex];
     const inepValor = opcaoSelecionada.dataset.inep || "";
     
     campoInep.value = inepValor;
-    campoInep.readOnly = true;
+    campoInep.disabled = false;  // Habilita para permitir o envio pelo FormData
+    campoInep.readOnly = true;   // Mantém travado para o usuário não editar
 });
-
-function liberarDigitacaoManual() {
-    campoInep.value = "";
-    campoInep.readOnly = false;
-    campoInep.placeholder = "Digite o código INEP manualmente";
-    campoInep.focus();
-}
 
 form.addEventListener("submit", function(event) {
     event.preventDefault();
@@ -656,7 +643,7 @@ form.addEventListener("submit", function(event) {
         return;
     }
 
-    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbzQAJNazR64ubFtXPCzvMA2lCoIBdltJH6imLE-iW2_fIT0DxA6z3JVzlecPit1Cn0Y/exec";
+    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
     const btnSubmit = document.querySelector(".btn-submit");
     const textoOriginal = btnSubmit ? btnSubmit.textContent : "Enviar";
     
@@ -674,15 +661,9 @@ form.addEventListener("submit", function(event) {
     }
     
     let inepInput = form.querySelector("#inep");
-    if (inepInput) {
-        // Habilita temporariamente para garantir que o valor seja lido pelo FormData
-        inepInput.disabled = false;
+    if (inepInput && !inepInput.disabled) {
         let inepValor = inepInput.value.replace(/\D/g, "");
-        if (inepValor.length > 0) {
-            formData.set("inep", "'" + inepValor);
-        } else {
-            formData.set("inep", "");
-        }
+        if (inepValor.length > 0) formData.set("inep", "'" + inepValor);
     }
 
     fetch(urlGoogleScript, { method: "POST", body: formData, mode: "no-cors" })
@@ -703,6 +684,7 @@ form.addEventListener("submit", function(event) {
     });
 });
 
+// GERENCIAMENTO DE ESTADO DOS CAMPOS POR PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const tipo = perfilSelecionado ? perfilSelecionado.value : "";
@@ -731,7 +713,6 @@ function atualizarEstadoCamposEscola() {
     if (tipo === "Profissional da Educação") {
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
-        campoInep.disabled = false; // Garante que está habilitado para envio
 
         if (selectMunicipio.value) {
             selectEscola.disabled = false;
@@ -747,7 +728,7 @@ function atualizarEstadoCamposEscola() {
 
         campoInep.value = "";
         campoInep.readOnly = true;
-        campoInep.disabled = true; // Desliga apenas para estudantes
+        campoInep.disabled = true;
         campoInep.removeAttribute("required");
         campoInep.placeholder = "Preenchido automaticamente";
     }
