@@ -727,8 +727,7 @@ function atualizarEstadoCamposEscola() {
         selectEscola.removeAttribute("required");
 
         campoInep.value = "";
-        campoInep.readOnly = true;
-        campoInep.disabled = true;
+        campoInep.disabled = true; // Desativa novamente para estudantes
         campoInep.removeAttribute("required");
         campoInep.placeholder = "Preenchido automaticamente";
     }
