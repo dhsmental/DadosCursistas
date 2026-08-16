@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dados Cadastrais de Cursistas - SISFOR</title>
+  <title>Dados Cadastrais de Novos Cursistas - SISFOR</title>
   
   <!-- Importação da Biblioteca PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -16,15 +16,16 @@
     }
 
     .container-principal {
-        max-width: 1000px; 
-        margin: 0 auto;   
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        overflow: hidden; 
-        padding: 40px 50px;
-        box-sizing: border-box;
-    }
+    max-width: 1000px; 
+    width: 100%;
+    margin: 0 auto;   
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    overflow: hidden; 
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
 
     .banner {
         margin: 0;
@@ -47,9 +48,10 @@
     }
 
     h1 {
-        font-size: 42px;
-        margin-bottom: 20px;
-    }
+    font-size: clamp(24px, 3vw, 42px);
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
 
     h2 {
         font-size: 20px;
@@ -87,7 +89,6 @@
 
     input[type="text"],
     input[type="email"],
-    input[type="date"],
     input[type="tel"],
     select {
         width: 100%;
@@ -156,7 +157,6 @@
         border: 1px solid #dadce0;
     }
 
-    /* Estilos do Alerta Personalizado Centralizado */
     #custom-alert-overlay {
         display: none;
         position: fixed;
@@ -230,8 +230,8 @@
 
 <div class="form-container">
 
-  <h1>Dados Cadastrais de Cursistas - SISFOR</h1>
-  <p class="description">Formulário para coleta de dados de alunos inscritos no curso de Direitos Humanos e Saúde Mental - UNIPAMPA</p>
+  <h1>Dados Cadastrais de Novos Cursistas - SISFOR</h1>
+  <p class="description">Formulário para coleta de dados de novos alunos inscritos no curso de Direitos Humanos e Saúde Mental - UNIPAMPA</p>
 
   <form id="formCursistas">
     
@@ -256,7 +256,7 @@
 
     <div class="form-group">
       <label for="data_nascimento">Data de Nascimento: <span class="required">*</span></label>
-      <input type="date" id="data_nascimento" name="data_nascimento" required>
+      <input type="text" id="data_nascimento" name="data_nascimento" placeholder="DD/MM/AAAA" maxlength="10" required>
     </div>
 
     <div class="form-group radio-group">
@@ -272,7 +272,7 @@
 
     <div class="form-group">
       <label for="telefone">Telefone com DDD <span class="required">*</span></label>
-      <input type="tel" id="telefone" name="telefone" placeholder="Sua resposta" required>
+      <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" maxlength="15" required>
     </div>
 
     <div class="form-group">
@@ -374,7 +374,7 @@
       <label>Perfil do Cursista: <span class="required">*</span></label>
       <div style="display: flex; gap: 20px; padding: 10px 0;">
         <label style="font-weight: normal; margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <input type="radio" name="tipo_cursista" value="Estudante" required style="width: auto; margin: 0;"> Outros
+            <input type="radio" name="tipo_cursista" value="Estudante" required style="width: auto; margin: 0;">  Outros
         </label>
         <label style="font-weight: normal; margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 8px;">
             <input type="radio" name="tipo_cursista" value="Profissional da Educação" style="width: auto; margin: 0;"> Profissional da Educação da Rede Básica de Ensino (atuam em escola da Rede)
@@ -493,6 +493,154 @@ function fecharAlertaCustomizado() {
     document.getElementById("custom-alert-overlay").style.display = "none";
 }
 
+// Função de validação real de CPF
+function validarCPF(cpf) {
+    cpf = String(cpf).replace(/[^\d]+/g, '');
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    return resto === parseInt(cpf.substring(10, 11));
+}
+
+// Função de validação de formato de E-mail
+function validarEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+// MÁSCARA AUTOMÁTICA E BLOQUEIO DE 4 DÍGITOS NO ANO PARA DATA DE NASCIMENTO
+document.getElementById("data_nascimento").addEventListener("input", function (e) {
+    let valor = e.target.value.replace(/\D/g, "");
+    if (valor.length > 8) {
+        valor = valor.substring(0, 8);
+    }
+    if (valor.length > 4) {
+        valor = valor.substring(0, 2) + "/" + valor.substring(2, 4) + "/" + valor.substring(4, 8);
+    } else if (valor.length > 2) {
+        valor = valor.substring(0, 2) + "/" + valor.substring(2, 4);
+    }
+    e.target.value = valor;
+});
+
+// MÁSCARA AUTOMÁTICA PARA TELEFONE ((00) 00000-0000 ou (00) 0000-0000)
+document.getElementById("telefone").addEventListener("input", function (e) {
+    let valor = e.target.value.replace(/\D/g, "");
+    if (valor.length > 11) {
+        valor = valor.substring(0, 11);
+    }
+    if (valor.length > 10) {
+        valor = "(" + valor.substring(0, 2) + ") " + valor.substring(2, 7) + "-" + valor.substring(7, 11);
+    } else if (valor.length > 6) {
+        valor = "(" + valor.substring(0, 2) + ") " + valor.substring(2, 6) + "-" + valor.substring(6, 10);
+    } else if (valor.length > 2) {
+        valor = "(" + valor.substring(0, 2) + ") " + valor.substring(2);
+    } else if (valor.length > 0) {
+        valor = "(" + valor;
+    }
+    e.target.value = valor;
+});
+
+// VALIDAÇÃO IMEDIATA AO SAIR DO CAMPO DE CPF (BLUR)
+document.getElementById("cpf").addEventListener("blur", function() {
+    let cpf = this.value.replace(/[^\d]+/g, '');
+    if (cpf.length > 0) {
+        if (!validarCPF(cpf)) {
+            mostrarAlertaCustomizado("O CPF informado é inválido. Por favor, verifique.", "Atenção");
+            this.focus();
+        }
+    }
+});
+
+// VALIDAÇÃO IMEDIATA AO SAIR DO CAMPO DE TELEFONE (BLUR)
+document.getElementById("telefone").addEventListener("blur", function() {
+    let tel = this.value.replace(/\D/g, '');
+    if (tel.length > 0) {
+        if (tel.length !== 10 && tel.length !== 11) {
+            mostrarAlertaCustomizado("O telefone informado está incompleto. Digite todos os números com o DDD no formato (00) 00000-0000.", "Atenção");
+            this.focus();
+        }
+    }
+});
+
+// VALIDAÇÃO IMEDIATA AO SAIR DO CAMPO DE E-MAIL (BLUR)
+document.getElementById("email").addEventListener("blur", function() {
+    let email = this.value.trim();
+    if (email.length > 0 && !validarEmail(email)) {
+        mostrarAlertaCustomizado("O formato do e-mail principal parece inválido. Verifique se digitou corretamente.", "Atenção");
+        this.focus();
+    }
+});
+
+// VALIDAÇÃO IMEDIATA AO SAIR DO CAMPO DE CONFIRMAÇÃO DE E-MAIL (BLUR)
+document.getElementById("confirm_email").addEventListener("blur", function() {
+    let email = document.getElementById("email").value.trim();
+    let confirmEmail = this.value.trim();
+    
+    if (confirmEmail.length > 0) {
+        if (!validarEmail(confirmEmail)) {
+            mostrarAlertaCustomizado("O formato do e-mail de confirmação parece inválido.", "Atenção");
+            this.focus();
+            return;
+        }
+        if (email !== confirmEmail) {
+            mostrarAlertaCustomizado("Os e-mails informados não conferem. Por favor, verifique.", "Atenção");
+            this.focus();
+        }
+    }
+});
+
+// VALIDAÇÃO IMEDIATA AO SAIR DO CAMPO DE DATA DE NASCIMENTO (BLUR)
+document.getElementById("data_nascimento").addEventListener("blur", function() {
+    let dataStr = this.value;
+    
+    if (dataStr.length > 0 && dataStr.length < 10) {
+        mostrarAlertaCustomizado("Por favor, digite a data completa no formato DD/MM/AAAA.", "Atenção");
+        this.focus();
+        return;
+    }
+
+    if (dataStr.length === 10) {
+        let partes = dataStr.split("/");
+        let dia = parseInt(partes[0], 10);
+        let mes = parseInt(partes[1], 10) - 1;
+        let ano = parseInt(partes[2], 10);
+
+        if (partes[2].length !== 4) {
+            mostrarAlertaCustomizado("O ano deve conter 4 dígitos (ex: 2000).", "Atenção");
+            this.focus();
+            return;
+        }
+
+        let dataNasc = new Date(ano, mes, dia);
+        let hoje = new Date();
+
+        if (dataNasc.getDate() !== dia || dataNasc.getMonth() !== mes || dataNasc.getFullYear() !== ano) {
+            mostrarAlertaCustomizado("A data de nascimento informada é inválida (ex: dia ou mês inexistente).", "Atenção");
+            this.focus();
+            return;
+        }
+
+        if (dataNasc > hoje) {
+            mostrarAlertaCustomizado("A data de nascimento não pode ser no futuro.", "Atenção");
+            this.focus();
+            return;
+        }
+
+        let anoMinimo = hoje.getFullYear() - 110;
+        if (ano < anoMinimo) {
+            mostrarAlertaCustomizado("O ano de nascimento indica uma idade superior a 110 anos.", "Atenção");
+            this.focus();
+        }
+    }
+});
+
 // 1. ALTERAÇÃO DE ESTADO (UF)
 selectUF.addEventListener("change", async function () {
     const uf = this.value;
@@ -558,7 +706,6 @@ selectMunicipio.addEventListener("change", function() {
     const inputCodMun = document.getElementById("codigo_municipio");
     if (inputCodMun) inputCodMun.value = codigoIbge;    
 
-    // Se for estudante, não precisa processar busca de escolas
     if (perfilSelecionado === "Estudante") return;
 
     selectEscola.innerHTML = '<option value="">Selecione uma escola</option>';
@@ -596,7 +743,6 @@ selectMunicipio.addEventListener("change", function() {
         const option = document.createElement("option");
         const nomeEscola = item["escola_onde_atua"] || item["Escola"] || "";
         
-        // Busca dinâmica por qualquer variação da coluna INEP no CSV
         let codigoInep = "";
         for (let chave in item) {
             if (chave.toLowerCase().includes("inep")) {
@@ -615,26 +761,89 @@ selectMunicipio.addEventListener("change", function() {
 });
 
 // 3. SELEÇÃO DA ESCOLA
-// 3. SELEÇÃO DA ESCOLA
 selectEscola.addEventListener("change", function() {
     const opcaoSelecionada = this.options[this.selectedIndex];
     const inepValor = opcaoSelecionada.dataset.inep || "";
     
     campoInep.value = inepValor;
-    campoInep.disabled = false;  // Habilita para permitir o envio pelo FormData
-    campoInep.readOnly = true;   // Mantém travado para o usuário não editar
+    campoInep.readOnly = true;
 });
+
+function liberarDigitacaoManual() {
+    campoInep.value = "";
+    campoInep.readOnly = false;
+    campoInep.placeholder = "Digite o código INEP manualmente";
+    campoInep.focus();
+}
 
 form.addEventListener("submit", function(event) {
     event.preventDefault();
 
-    // Validação de E-mails iguais
+    // Validação de E-mails iguais e formato
     const email = document.getElementById("email").value.trim();
     const confirmEmail = document.getElementById("confirm_email").value.trim();
 
+    if (!validarEmail(email)) {
+        mostrarAlertaCustomizado("O e-mail principal informado é inválido.", "Atenção");
+        document.getElementById("email").focus();
+        return;
+    }
+
     if (email !== confirmEmail) {
-        mostrarAlertaCustomizado("Os endereços de e-mail informados não coincidem. Por favor, verifique e tente novamente.", "Atenção");
+        mostrarAlertaCustomizado("Os endereços de e-mail informados não coincidem. Por favor, verifique.", "Atenção");
         document.getElementById("confirm_email").focus();
+        return;
+    }
+
+    // Validação final de Telefone
+    const telVal = document.getElementById("telefone").value.replace(/\D/g, '');
+    if (telVal.length !== 10 && telVal.length !== 11) {
+        mostrarAlertaCustomizado("O telefone informado está incompleto. Por favor, verifique.", "Atenção");
+        document.getElementById("telefone").focus();
+        return;
+    }
+
+    // Validação final de Data de Nascimento
+    const dataStr = document.getElementById("data_nascimento").value;
+    const partes = dataStr.split("/");
+    
+    if (partes.length !== 3 || partes[2].length !== 4) {
+        mostrarAlertaCustomizado("Por favor, digite a data de nascimento completa no formato DD/MM/AAAA.", "Atenção");
+        document.getElementById("data_nascimento").focus();
+        return;
+    }
+
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1;
+    const ano = parseInt(partes[2], 10);
+
+    const dataNasc = new Date(ano, mes, dia);
+    const hoje = new Date();
+
+    if (dataNasc.getDate() !== dia || dataNasc.getMonth() !== mes || dataNasc.getFullYear() !== ano) {
+        mostrarAlertaCustomizado("A data de nascimento informada é inválida.", "Atenção");
+        document.getElementById("data_nascimento").focus();
+        return;
+    }
+
+    if (dataNasc > hoje) {
+        mostrarAlertaCustomizado("A data de nascimento não pode ser no futuro.", "Atenção");
+        document.getElementById("data_nascimento").focus();
+        return;
+    }
+
+    let anoMinimo = hoje.getFullYear() - 110;
+    if (ano < anoMinimo) {
+        mostrarAlertaCustomizado("O ano de nascimento indica uma idade superior a 110 anos. Verifique o valor.", "Atenção");
+        document.getElementById("data_nascimento").focus();
+        return;
+    }
+
+    // Validação final de CPF
+    const cpfInputVal = document.getElementById("cpf").value;
+    if (!validarCPF(cpfInputVal)) {
+        mostrarAlertaCustomizado("O CPF informado é inválido.", "Atenção");
+        document.getElementById("cpf").focus();
         return;
     }
 
@@ -643,7 +852,7 @@ form.addEventListener("submit", function(event) {
         return;
     }
 
-    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbxaeWd1Unxb6IC7tojvwUVqOL_L8hTxDO0mBtcZlYCAblvOsctaN3Vnh-quJOE10ROp/exec";
+    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbzQAJNazR64ubFtXPCzvMA2lCoIBdltJH6imLE-iW2_fIT0DxA6z3JVzlecPit1Cn0Y/exec";
     const btnSubmit = document.querySelector(".btn-submit");
     const textoOriginal = btnSubmit ? btnSubmit.textContent : "Enviar";
     
@@ -661,9 +870,14 @@ form.addEventListener("submit", function(event) {
     }
     
     let inepInput = form.querySelector("#inep");
-    if (inepInput && !inepInput.disabled) {
+    if (inepInput) {
+        inepInput.disabled = false;
         let inepValor = inepInput.value.replace(/\D/g, "");
-        if (inepValor.length > 0) formData.set("inep", "'" + inepValor);
+        if (inepValor.length > 0) {
+            formData.set("inep", "'" + inepValor);
+        } else {
+            formData.set("inep", "");
+        }
     }
 
     fetch(urlGoogleScript, { method: "POST", body: formData, mode: "no-cors" })
@@ -684,7 +898,6 @@ form.addEventListener("submit", function(event) {
     });
 });
 
-// GERENCIAMENTO DE ESTADO DOS CAMPOS POR PERFIL
 function atualizarEstadoCamposEscola() {
     const perfilSelecionado = document.querySelector('input[name="tipo_cursista"]:checked');
     const tipo = perfilSelecionado ? perfilSelecionado.value : "";
@@ -713,6 +926,7 @@ function atualizarEstadoCamposEscola() {
     if (tipo === "Profissional da Educação") {
         selectEscola.setAttribute("required", "required");
         campoInep.setAttribute("required", "required");
+        campoInep.disabled = false;
 
         if (selectMunicipio.value) {
             selectEscola.disabled = false;
@@ -727,13 +941,13 @@ function atualizarEstadoCamposEscola() {
         selectEscola.removeAttribute("required");
 
         campoInep.value = "";
-        campoInep.disabled = true; // Desativa novamente para estudantes
+        campoInep.readOnly = true;
+        campoInep.disabled = true;
         campoInep.removeAttribute("required");
         campoInep.placeholder = "Preenchido automaticamente";
     }
 }
 
-// Ouve mudanças nos rádios de perfil
 if (radiosPerfil) {
     radiosPerfil.forEach(radio => {
         radio.addEventListener("change", () => {
